@@ -104,7 +104,10 @@ end
 
 %% ===== READ SPIKE EVENTS =====
 % Find all the .res files
-dirres = dir(fullfile(fPath, [fBase, '*.res*']));
+dirres = dir(fullfile(fPath, [fBase, '*.res.*']));
+if regexp(dirres(1).name(end),'\D')
+    dirres = dirres(2:end)
+end
 % Read each file
 for iFile = 1:length(dirres)
     % Build filenames
@@ -155,7 +158,8 @@ for iFile = 1:length(dirres)
         % One event per cluster
         for iClu = 1:length(uniqueClu)
             iTime = find(spikeClu == uniqueClu(iClu));
-            events(iClu).label      = sprintf('C%dS%d', uniqueClu(iClu), iFile);
+            events(iClu).label      = sprintf('Spikes Channel Tetrode %d Cluster %d', ...
+                                               iFile, uniqueClu(iClu));
             events(iClu).color      = [];
             events(iClu).reactTimes = [];
             events(iClu).select     = 1;

@@ -191,12 +191,15 @@ function OutputFiles = Run(sProcess, sInputs)
                         end
                         all_phases((iNeuron-1)*nChannels+1:iNeuron*nChannels,:) = all_phases((iNeuron-1)*nChannels+1:iNeuron*nChannels,:) + single_spike_entry;
                     else
-                        [all_phases_single_neuron,edges] = histcounts(angle_filtered_F(:,iClosest)',EDGES);
-                        
-                        if size(all_phases_single_neuron, 1) ~= 1 % If a vector then transpose to 
-                            all_phases_single_neuron = all_phases_single_neuron';
+                        % Tobi: I think a loop through the channels as in the if 
+                        %       conditional directly above is missing here!!!
+                        for iChannel = 1:nChannels
+                            [all_phases_single_neuron,edges] = histcounts(angle_filtered_F(iChannel,iClosest)',EDGES);
+                            if size(all_phases_single_neuron, 1) ~= 1 % If a vector then transpose to 
+                                all_phases_single_neuron = all_phases_single_neuron';
+                            end
+                            all_phases((iNeuron-1)*nChannels+iChannel:iNeuron*nChannels,:) = all_phases((iNeuron-1)*nChannels+iChannel:iNeuron*nChannels,:) + all_phases_single_neuron;
                         end
-                        all_phases((iNeuron-1)*nChannels+1:iNeuron*nChannels,:) = all_phases((iNeuron-1)*nChannels+1:iNeuron*nChannels,:) + all_phases_single_neuron;
                     end                      
                 end
             end
